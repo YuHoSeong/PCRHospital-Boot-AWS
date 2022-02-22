@@ -19,6 +19,7 @@ repositories {
 }
 
 dependencies {
+	implementation group: 'com.github.spullara.mustache.java', name: 'compiler', version: '0.8.9'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-mustache'
 	implementation 'org.springframework.boot:spring-boot-starter-web'

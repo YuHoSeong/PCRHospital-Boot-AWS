@@ -27,7 +27,7 @@ public class HospDownloadBatch {
     private final HospitalRepository hospitalRepository;
 
     // 초 분 시 일 월 주
-    @Scheduled(cron = "0 59 * * * *", zone = "Asia/Seoul") // 매 시 마다 배치함. 매시 59분 마다로 변경
+    @Scheduled(cron = "0 03 * * * *", zone = "Asia/Seoul") // 매 시 마다 배치함. 매시 59분 마다로 변경
     public void startBatch() {
         // System.out.println("나 1분마다 실행 됨");
 
