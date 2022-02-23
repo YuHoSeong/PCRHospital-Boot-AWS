@@ -11,7 +11,7 @@ document.querySelector("#btn-submit").addEventListener("click", (e) => {
 })
 
 let getHospital = async (sidoCdNm, sgguCdNm) => {
-    let response = await fetch(`http://localhost:8000/api/hospital?sidoCdNm=${sidoCdNm}&sgguCdNm=${sgguCdNm}`);
+    let response = await fetch(`http://localhost:80/api/hospital?sidoCdNm=${sidoCdNm}&sgguCdNm=${sgguCdNm}`);
     let responsePasing = await response.json();
 
     // console.log(responsePasing);
@@ -54,7 +54,7 @@ let setSggucdnm = (responsePasing) => {
 }
 
 let getSggucdnm = async (sidoCdNm) => {
-    let response = await fetch(`http://localhost:8000/api/sggucdnm?sidoCdNm=${sidoCdNm}`);
+    let response = await fetch(`http://localhost:80/api/sggucdnm?sidoCdNm=${sidoCdNm}`);
     let responsePasing = await response.json();
     // console.log(responsePasing);
     setSggucdnm(responsePasing);
