@@ -4,34 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
-import lombok.RequiredArgsConstructor;
 import site.hsyu.hosp.domain.Hospital;
 import site.hsyu.hosp.domain.HospitalRepository;
 
-// 1주일에 한번씩 다운로드해서 DB에 변경해주기
-// pcr 검사기관이 추가 될 수 있기 때문에
-// 4개 병원이 있다면 4개가 DB에 insert 된다.
-// 다음날에는 5개 병원이 되었다면 한개 추가하는 로직이 복잡할 것 같아서
-// 그냥 4개 데이터 삭제해버리고 새로 추가해서 넣자.
-// 공공데이터를 바로 바로 서비스 해주는 방식은 하루에 트래픽이 1000이라서 서비스하기 힘들것 같다.
+@Configuration
+public class DBInitializer {
+    
+    // 스프링부트 시작시에 한번 실행됨
+    @Bean
+    public CommandLineRunner initDB(HospitalRepository hRepository){
 
-@RequiredArgsConstructor
-@Component
-public class HospDownloadBatch {
-
-    // DI
-    private final HospitalRepository hospitalRepository;
-
-    // 초 분 시 일 월 주
-    @Scheduled(cron = "0 40 * * * *", zone = "Asia/Seoul") // 매 시 마다 배치함. 매시 59분 마다로 변경
-    public void startBatch() {
-        // System.out.println("나 1분마다 실행 됨");
-
-        // 1. 담을 그릇 준비
+        return(args) -> {
+            // 1. 담을 그릇 준비
         List<Hospital> hospitals = new ArrayList<>();
 
         // 2. api 한번 호출해서 totalcount 확인
@@ -79,10 +68,11 @@ public class HospDownloadBatch {
 
         // 삭제 테스트
         // 기존 데이터 다 삭제하기 (삭제 잘 되는지 먼저 테스트하기위해 yml - update로 변경)
-        hospitalRepository.deleteAll();;
+        hRepository.deleteAll();;
 
         // 배치시간에 db에 insert 하기(하루에 한번 할 예정)
-        hospitalRepository.saveAll(hospitals);
+        hRepository.saveAll(hospitals);
+        };
+        
     }
-
 }
