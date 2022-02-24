@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @AllArgsConstructor
@@ -16,6 +17,7 @@ import lombok.ToString;
 @Builder
 @ToString
 @Getter
+@Setter
 @Entity
 public class Hospital{
     @Id
@@ -31,10 +33,10 @@ public class Hospital{
     private String sgguCdNm;  // 사군구명 : 김해시
     private String sidoCdNm;  // 시도명 : 경상남도
     private String telno;
-    private Double xPosWgs84;  // x좌표(위도)
-    private Double yPosWgs84;  // y좌표(경도)
+    private Double XPosWgs84;  // x좌표(위도)
+    private Double YPosWgs84;  // y좌표(경도)
     private String yadmNm;  // 요양기관명
     private String ykihoEnc;  // 암호화된 요양 기호
-    private Integer xPos;  // x좌표 (좌표)
-    private Integer yPos;  // y좌표 (좌표)
+    private Integer XPos;  // x좌표 (좌표)
+    private Integer YPos;  // y좌표 (좌표)
 }

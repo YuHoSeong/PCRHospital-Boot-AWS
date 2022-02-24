@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -40,8 +43,7 @@ public class HospDownloadBatch {
         // 사이즈를 1로 했더니 item이 컬렉션이 아니라서 파싱이 안되서 2로 바꿈
         int totalCount = 2;
 
-        String totalCountUrl = "http://apis.data.go.kr/B551182/rprtHospService/getRprtHospService?serviceKey=wBH50snlYAlyFnnzx5jDPfyTSi/dc3njyf3AwfnQQDpPGvJpKC4YFGqPsw/IrapOupZkKGgf7htdzxi4Ksu3tw==&pageNo=1&numOfRows="
-                + totalCount + "&_type=json";
+        String totalCountUrl = "http://apis.data.go.kr/B551182/rprtHospService/getRprtHospService?serviceKey=wBH50snlYAlyFnnzx5jDPfyTSi/dc3njyf3AwfnQQDpPGvJpKC4YFGqPsw/IrapOupZkKGgf7htdzxi4Ksu3tw==&pageNo=1&numOfRows="+totalCount+"&_type=json";
 
         ResponseDto totalCountDto = rt.getForObject(totalCountUrl, ResponseDto.class);
         totalCount = totalCountDto.getResponse().getBody().getTotalCount();
@@ -68,18 +70,46 @@ public class HospDownloadBatch {
                             .recuClCd(e.getRecuClCd())
                             .sgguCdNm(e.getSgguCdNm())
                             .sidoCdNm(e.getSidoCdNm())
-                            .xPosWgs84(e.getXPosWgs84())
-                            .yPosWgs84(e.getYPosWgs84())
+                            .XPosWgs84(e.getXPosWgs84())
+                            .YPosWgs84(e.getYPosWgs84())
                             .yadmNm(e.getYadmNm())
                             .ykihoEnc(e.getYkihoEnc())
-                            .xPos(e.getXPos())
-                            .yPos(e.getYPos())
+                            .XPos(e.getXPos())
+                            .YPos(e.getYPos())
                             .build();
                 }).collect(Collectors.toList());
 
+        String test = rt.getForObject(url, String.class);
+        JSONObject test1;
+        try{
+            test1 = new JSONObject(test);
+            JSONArray item = test1.getJSONObject("response").getJSONObject("body").getJSONObject("items").getJSONArray("item");
+            int length = item.length();
+            for(int i=0; i<length;i++){
+                if(!item.getJSONObject(i).isNull("XPosWgs84")){
+                    hospitals.get(i).setXPosWgs84(item.getJSONObject(i).getDouble("XPosWgs84"));
+                    hospitals.get(i).setXPosWgs84(Double.parseDouble(item.getJSONObject(i).getString("XPosWgs84")));
+                }
+                if(!item.getJSONObject(i).isNull("YPosWgs84")){
+                    hospitals.get(i).setYPosWgs84(item.getJSONObject(i).getDouble("YPosWgs84"));
+                    hospitals.get(i).setYPosWgs84(Double.parseDouble(item.getJSONObject(i).getString("YPosWgs84")));
+                }
+                if(!item.getJSONObject(i).isNull("XPos")){
+                    hospitals.get(i).setXPos(item.getJSONObject(i).getInt("XPos"));
+                    hospitals.get(i).setXPos(Integer.parseInt(item.getJSONObject(i).getString("XPos")));
+                }
+                if(!item.getJSONObject(i).isNull("YPos")){
+                    hospitals.get(i).setYPos(item.getJSONObject(i).getInt("YPos"));
+                    hospitals.get(i).setYPos(Integer.parseInt(item.getJSONObject(i).getString("YPos")));
+                }
+            }
+        } catch (JSONException e1) {
+            e1.printStackTrace();
+        }
+
         // 삭제 테스트
         // 기존 데이터 다 삭제하기 (삭제 잘 되는지 먼저 테스트하기위해 yml - update로 변경)
-        hospitalRepository.deleteAll();;
+        hospitalRepository.deleteAll();
 
         // 배치시간에 db에 insert 하기(하루에 한번 할 예정)
         hospitalRepository.saveAll(hospitals);
