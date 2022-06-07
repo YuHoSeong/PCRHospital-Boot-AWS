@@ -18,8 +18,7 @@
   - DB로 저장할 객체에는 null로 담겨있다.
 
 ### 원인추론
-  - 현재 XPos,YPos는 Integer, XPosWgs84,YPosWgs84는 Double 의 데이터타입으로 설정되어있다.
-    데이터의 타입이 맞지 않는것일까?
+  - 공공API XPos,YPos,XPosWgs84,YPosWgs84 데이터타입이 여러가지로 저장되 있어서 객체저장에 실패하는 것 같다.
     
 ### 조치방안
   - 외부API데이터를 String.class 로 전체 추출 후 JSON타입으로 변환하여 타입에 맞도록 저장하였다.
